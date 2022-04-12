@@ -12,6 +12,7 @@ urlpatterns = [
     path("home/<int:id>", views.list_questions, name="list_questions"),
     path("ask_question/", views.ask_question, name="ask_question"),
     path("answer_question/<int:id>", views.answer_question, name="answer_question"),
+    path("view_qa/<int:id>", views.view_qa, name="view_qa"),
     path("upvote/<int:id>", views.upvote, name="upvote"),
     path("unupvote/<int:id>", views.unupvote, name="unupvote"),
 ]
