@@ -182,9 +182,29 @@ def answer_question(request, question_id):
 
 @login_required(login_url="main:login")
 def view_qa(request, question_id):
-    pass
+    # logic to see if question id is correct
+    question = "How do you find the middle element of a singly linked list in one pass?"  # fetch the question here
+    answers = [
+        {
+            "votes": "24",
+            "answer": "Traverse the whole linked list and count the no. of nodes. Now traverse the list again till count/2 and return the node at count/2.",
+            "voted": True,
+        },
+        {
+            "votes": "12",
+            "answer": "Traverse linked list using two pointers. Move one pointer by one and the other pointers by two. When the fast pointer reaches the end slow pointer will reach the middle of the linked list.",
+            "voted": False,
+        },
+    ]  # fetch answers
+    # write the logic to sort and format the votes
+    return render(
+        request,
+        "view_qa.html",
+        {"question": question, "question_id": question_id, "answers": answers},
+    )
 
 
+# complete the whole upvote and unupvote logic and working
 @login_required(login_url="main:login")
 def upvote(request, answer_id):
     pass
