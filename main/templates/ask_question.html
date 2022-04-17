@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% load static %} {% load crispy_forms_tags%}
+
+{% block title %}Ask Question{% endblock %}
+
+
+{% block body %}
+<div style="max-height:90vh" class="full-height d-flex align-items-center justify-content-center">
+    <div class="card shadow border rounded">
+        <div class="consent-card rounded">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h2 class="text-center" style="margin:0 0 22px 0;">ASK QUESTION</h2>
+                <div style="margin-bottom:14px;" class="row">
+                    {{ form.question|as_crispy_field }}
+                </div>
+                <div class="mt-4 d-flex">
+                    <div style="padding-right:6px;">
+                        <input type="submit" value="Submit" class="btn btn-primary btnmedium">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

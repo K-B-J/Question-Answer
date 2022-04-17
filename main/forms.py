@@ -22,3 +22,9 @@ class UserInfoForm(forms.ModelForm):
     class Meta:
         model = UserInfo
         fields = ["first_name", "last_name", "mobile_no", "gender", "email"]
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = "__all__"

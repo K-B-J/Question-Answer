@@ -99,7 +99,11 @@ def list_questions(request, page_no):
 
 @login_required(login_url="main:login")
 def ask_question(request):
-    pass
+    if request.method == "GET":
+        form = QuestionForm()
+        return render(request, "ask_question.html", {"form": form})
+    # else:
+    #     form = Question(request.)
 
 
 @login_required(login_url="main:login")
