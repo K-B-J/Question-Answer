@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} {% load crispy_forms_tags%}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home: Answered Questions</title>
+    <link rel="icon" type="image/png" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/message_hider.js' %}"></script>
+    <style>
+        .question:hover {
+            background-color: rgb(247, 247, 247);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar  navbar-expand-lg navbar-light bg-dark">
+        <div class="container-fluid">
+            <a class="{% url 'main:home' %}" style="text-decoration: none; color: white; font-size: 22px;">
+                Q & A
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <div style="flex: 1;"></div>
+                <ul class="navbar-nav">
+                    <li class="nav-item" style="margin-top: 4px; margin-right: 20px;">
+                        <a class="btn btn-light btn-sm" href="{% url 'main:ask_question' %}">Ask Question</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" style="color: white; margin-right: 12px;">
+                            {{ request.user }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'main:logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex align-items-center justify-content-center" style="margin: 1.5rem; margin-top: 2rem;">
+        <ul class="nav nav-tabs" style="width: 100%;">
+            <li class="nav-item" style="width: 50%; text-align: center;">
+                <a class="nav-link" href="{% url 'main:list_questions' 0 %}">Unanswered Questions</a>
+            </li>
+            <li class="nav-item" style="width: 50%; text-align: center;">
+                <a class="nav-link active" aria-current="page" href="#">Answered Questions</a>
+            </li>
+        </ul>
+    </div>
+    {% for question in questions %}
+    <a href="{% url 'main:view_qa' question.id %}" style="text-decoration: none; color: black;">
+        <div class="card round question" style="margin: 1.2rem 1.5rem;">
+            <p style="margin: 1rem;">{{ question.question }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</body>
+
+</html>
