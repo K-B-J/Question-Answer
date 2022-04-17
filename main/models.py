@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class UserInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    gender = models.CharField(max_length=255)
+    email = models.EmailField()
+    mobile_no = models.CharField(max_length=20)
+
+    def __str__(self) -> str:
+        return self.first_name
+
+
 class Question(models.Model):
     question = models.TextField()
 
