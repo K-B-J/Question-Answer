@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+
+{% load static %} {% load crispy_forms_tags%}
+
+{% block title %}Login{% endblock %}
+
+{% block links %}
+<script>
+    let opacity = 0
+    let intervalID = 0
+    const temp = () => {
+        setInterval(hide, 200)
+    }
+    const hide = () => {
+        let message = document.getElementById("message")
+        opacity =
+            Number(window.getComputedStyle(message).getPropertyValue("opacity"))
+
+        if (opacity > 0) {
+            opacity = opacity - 0.1
+            message.style.opacity = opacity
+        }
+        else {
+            clearInterval(intervalID)
+        }
+    }
+    const display = () => {
+        let message = document.getElementById("message")
+        message.style.display = "none"
+    }
+    const fadeout = () => {
+        setTimeout(temp, 20000)
+        setTimeout(display, 22000)
+    }
+    window.onload = fadeout
+</script>
+{% endblock %}
+
+{% block body %}
+<div style="max-height:90vh" class="full-height d-flex align-items-center justify-content-center">
+    <div class="card shadow border rounded">
+        <div class="consent-card rounded">
+            <div id="message">
+                {% if my_messages %}
+                <div class="mb-3 alert alert-danger" role="alert">
+                    {{ my_messages.error }}
+                </div>
+                {% endif %}
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h2 class="text-center" style="margin:0 0 22px 0;">LOGIN</h2>
+                <div style="margin-bottom:14px;" class="row">
+                    {{ form.username|as_crispy_field }}
+                </div>
+                <div style="margin-bottom:14px;" class="row">
+                    {{ form.password|as_crispy_field }}
+                </div>
+                <div class="mt-4 d-flex">
+                    <div style="padding-right:6px;">
+                        <input type="submit" value="Login" class="btn btn-primary btnmedium">
+                    </div>
+                    <div style="padding-left:6px;">
+                        <a href="{% url 'main:register' %}" class="btn btn-info btnmedium"> Sign up</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
