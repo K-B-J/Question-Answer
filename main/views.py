@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -83,7 +84,7 @@ def register(request):
 
 @login_required(login_url="main:login")
 def logout(request):
-    logout(request)
+    auth_logout(request)
     return redirect("main:login")
 
 
@@ -102,13 +103,26 @@ def ask_question(request):
     if request.method == "GET":
         form = QuestionForm()
         return render(request, "ask_question.html", {"form": form})
-    # else:
-    #     form = Question(request.)
+    else:
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Add logic to show message that question is posted
+            return redirect("main:home")
+        else:
+            return render(request, "ask_question.html", {"form": form})
 
 
 @login_required(login_url="main:login")
 def answer_question(request, question_id):
-    pass
+    if request.method == "GET":
+        form = AnswerForm()
+        question = "asdfasdf"  # write question logic here
+        return render(
+            request, "answer_question.html", {"form": form, "question": question}
+        )
+    # else:
+    # submit answer logic
 
 
 @login_required(login_url="main:login")
