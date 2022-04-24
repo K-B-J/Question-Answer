@@ -10,10 +10,31 @@
     .invalid-feedback {
         display: block;
     }
+
+    .go-back {
+        text-decoration: none;
+        display: block;
+        width: 34px;
+        margin-bottom: 20px;
+        padding: 4px 10px;
+        background-color: #ff0000c0;
+        color: white;
+        box-shadow: 0.8mm 0.8mm 0.8mm rgba(0, 0, 0, 0.2);
+        border-radius: 20%;
+        position: sticky;
+        top: 1%;
+        left: 2%;
+    }
+
+    .go-back:hover {
+        background-color: rgba(226, 226, 226, 0.678);
+        color: black;
+    }
 </style>
 {% endblock %}
 
 {% block body %}
+<a class="go-back mt-3" href="{% url 'main:view_qa' question_id %}" style="z-index: 1;">&#8249;&#8249;&#8249;</a>
 <div class="d-flex align-items-center justify-content-center" style="margin: 1.5rem; margin-top: 2.5rem;">
     <div class="card shadow" style="width:60rem; padding: 1rem; border-radius: 3mm;">
         <form action="" method="POST">

@@ -168,7 +168,9 @@ def answer_question(request, question_id):
             form = AnswerForm()
             question = Question.objects.get(id=question_id).question
             return render(
-                request, "answer_question.html", {"form": form, "question": question}
+                request,
+                "answer_question.html",
+                {"form": form, "question": question, "question_id": question_id},
             )
         else:
             question = Question.objects.get(id=question_id)
@@ -187,7 +189,11 @@ def answer_question(request, question_id):
                 return render(
                     request,
                     "answer_question.html",
-                    {"form": form, "question": question.question},
+                    {
+                        "form": form,
+                        "question": question.question,
+                        "question_id": question_id,
+                    },
                 )
     else:
         return HttpResponseNotFound()
