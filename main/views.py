@@ -118,14 +118,22 @@ def list_questions(request, page_no):
         for question in questions_data:
             if not Answer.objects.filter(question=question).exists():
                 questions.append({"id": question.id, "question": question.question})
-        return render(request, "home0.html", {"questions": questions[::-1]})
+        context = {"questions": questions[::-1]}
+        if "my_messages" in request.session:
+            context["my_messages"] = request.session["my_messages"]
+            del request.session["my_messages"]
+        return render(request, "home0.html", context)
     elif page_no == 1:
         questions_data = Question.objects.all()
         questions = []
         for question in questions_data:
             if Answer.objects.filter(question=question).exists():
                 questions.append({"id": question.id, "question": question.question})
-        return render(request, "home1.html", {"questions": questions[::-1]})
+        context = {"questions": questions[::-1]}
+        if "my_messages" in request.session:
+            context["my_messages"] = request.session["my_messages"]
+            del request.session["my_messages"]
+        return render(request, "home1.html", context)
     else:
         return HttpResponseNotFound()
 
@@ -138,8 +146,13 @@ def ask_question(request):
     else:
         form = QuestionForm(request.POST)
         if form.is_valid():
-            form.save()
-            # Add logic to show message that question is posted
+            question = form.save(commit=False)
+            question.user = UserInfo.objects.get(user=request.user)
+            question.save()
+            request.session["my_messages"] = {
+                "success": True,
+                "message": "Question Posted Successfully",
+            }
             return redirect("main:home")
         else:
             return render(request, "ask_question.html", {"form": form})
