@@ -1,3 +1,4 @@
+from curses.ascii import US
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -160,14 +161,34 @@ def ask_question(request):
 
 @login_required(login_url="main:login")
 def answer_question(request, question_id):
-    if request.method == "GET":
-        form = AnswerForm()
-        question = "asdfasdf"  # write logic to fetch question here
-        return render(
-            request, "answer_question.html", {"form": form, "question": question}
-        )
-    # else:
-    # submit answer logic with message
+    if Question.objects.filter(id=question_id).exists():
+        if request.method == "GET":
+            form = AnswerForm()
+            question = Question.objects.get(id=question_id).question
+            return render(
+                request, "answer_question.html", {"form": form, "question": question}
+            )
+        else:
+            question = Question.objects.get(id=question_id)
+            form = AnswerForm(request.POST)
+            if form.is_valid():
+                answer = form.save(commit=False)
+                answer.user = UserInfo.objects.get(user=request.user)
+                answer.question = question
+                answer.save()
+                request.session["my_messages"] = {
+                    "success": True,
+                    "message": "Answer Posted Successfully",
+                }
+                return redirect("main:view_qa", question_id=question_id)
+            else:
+                return render(
+                    request,
+                    "answer_question.html",
+                    {"form": form, "question": question.question},
+                )
+    else:
+        return HttpResponseNotFound()
 
 
 @login_required(login_url="main:login")
@@ -188,11 +209,11 @@ def view_qa(request, question_id):
                     "voted": voted,
                 }
             )
-        answers = sorted(answers, key=lambda d: d["votes"])
+        answers = sorted(answers, key=lambda d: int(d["votes"]))
         context = {
             "question": question.question,
             "question_id": question_id,
-            "answers": answers,
+            "answers": answers[::-1],
         }
         if "my_messages" in request.session:
             context["my_messages"] = request.session["my_messages"]
