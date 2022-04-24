@@ -19,6 +19,7 @@
         background-color: #ff7f7f58;
     }
 </style>
+<script src="{% static 'js/upvoteLogic.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -30,16 +31,18 @@
 {% for answer in answers %}
 <div class="d-flex" style="flex-direction: row; margin: 1.2rem 1.5rem;">
     {% if answer.voted %}
-    <a href="#" style="text-decoration: none; color: black; text-align: center;">
-        <div class="d-flex card round unupvote"
+    <a href="#" id="{{ answer.answer_id }}" style="text-decoration: none; color: black; text-align: center;"
+        onclick="logic(this)">
+        <div id="{{ answer.answer_id }}-div" class="d-flex card round unupvote"
             style="flex-direction: column; padding: 0.75rem 1.25rem; margin-right: 0.75rem;">
             {% else %}
-            <a href="#" style="text-decoration: none; color: black; text-align: center;">
-                <div class="d-flex card round upvote"
+            <a href="#" id="{{ answer.answer_id}}" style="text-decoration: none; color: black; text-align: center;"
+                onclick="logic(this)">
+                <div id="{{ answer.answer_id }}-div" class="d-flex card round upvote"
                     style="flex-direction: column; padding: 0.75rem 1.25rem; margin-right: 0.75rem;">
                     {% endif %}
                     <i class="fa-solid fa-arrow-up"></i>
-                    <p class="text-muted" style="margin: 0;">{{ answer.votes }}</p>
+                    <p id="{{ answer.answer_id }}-p" class="text-muted" style="margin: 0;">{{ answer.votes }}</p>
                 </div>
             </a>
             <div class="card round" style="flex: 1;">
@@ -51,4 +54,4 @@
             <a class="btn btn-success" href="{% url 'main:answer_question' question_id %}">Answer
                 Question</a>
         </div>
-{% endblock %}
+        {% endblock %}

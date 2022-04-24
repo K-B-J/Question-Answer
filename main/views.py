@@ -1,4 +1,3 @@
-from curses.ascii import US
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -9,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 from django.http import HttpResponseNotFound
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 
 
 def root(request):
@@ -199,7 +201,7 @@ def view_qa(request, question_id):
         for answer in Answer.objects.filter(question=question):
             votes = str(AnswerUpvote.objects.filter(answer=answer).count())
             voted = AnswerUpvote.objects.filter(
-                user=UserInfo.objects.get(user=request.user)
+                answer=answer, user=UserInfo.objects.get(user=request.user)
             ).exists()
             answers.append(
                 {
@@ -227,12 +229,59 @@ def view_qa(request, question_id):
         return HttpResponseNotFound()
 
 
-# complete the whole upvote and unupvote logic and working
 @login_required(login_url="main:login")
+@api_view(["GET"])
 def upvote(request, answer_id):
-    pass
+    if (
+        Answer.objects.filter(id=answer_id).exists()
+        and not AnswerUpvote.objects.filter(
+            answer=Answer.objects.get(id=answer_id),
+            user=UserInfo.objects.get(user=request.user),
+        ).exists()
+    ):
+        AnswerUpvote(
+            answer=Answer.objects.get(id=answer_id),
+            user=UserInfo.objects.get(user=request.user),
+        ).save()
+        return Response(
+            {"success": {"message": "Answer upvoted successfully"}},
+            status=status.HTTP_200_OK,
+        )
+    else:
+        return Response(
+            {
+                "error": {
+                    "message": "Either answer doesn't exist or the answer is already upvoted"
+                }
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
 
 @login_required(login_url="main:login")
+@api_view(["GET"])
 def unupvote(request, answer_id):
-    pass
+    if (
+        Answer.objects.filter(id=answer_id).exists()
+        and AnswerUpvote.objects.filter(
+            answer=Answer.objects.get(id=answer_id),
+            user=UserInfo.objects.get(user=request.user),
+        ).exists()
+    ):
+        AnswerUpvote.objects.get(
+            answer=Answer.objects.get(id=answer_id),
+            user=UserInfo.objects.get(user=request.user),
+        ).delete()
+        return Response(
+            {"success": {"message": "Answer unupvoted successfully"}},
+            status=status.HTTP_200_OK,
+        )
+    else:
+        return Response(
+            {
+                "error": {
+                    "message": "Either answer doesn't exist or the answer isn't upvoted"
+                }
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
