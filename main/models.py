@@ -33,5 +33,5 @@ class Answer(models.Model):
 
 
 class AnswerUpvote(models.Model):
-    question = models.ForeignKey(Answer, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserInfo, on_delete=models.DO_NOTHING)
