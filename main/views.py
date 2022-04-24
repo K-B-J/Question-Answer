@@ -113,56 +113,19 @@ def home(request):
 @login_required(login_url="main:login")
 def list_questions(request, page_no):
     if page_no == 0:
-        questions = [
-            {"id": 1, "question": "How is a bubble sort algorithm implemented?"},
-            {
-                "id": 2,
-                "question": "How to print the first non-repeated character from a string?",
-            },
-            {
-                "id": 3,
-                "question": "How to find the first non repeated character of a given String?",
-            },
-            {
-                "id": 4,
-                "question": "How do you find duplicate numbers in an array if it contains multiple duplicates?",
-            },
-            {
-                "id": 5,
-                "question": "How do you remove duplicates from an array in place?",
-            },
-            {
-                "id": 6,
-                "question": "How are duplicates removed from an array without using any library?",
-            },
-            {
-                "id": 7,
-                "question": "How do you find the middle element of a singly linked list in one pass?",
-            },
-            {
-                "id": 8,
-                "question": "How do you check if a given linked list contains a cycle? How will you find initial node of the cycle?",
-            },
-            {
-                "id": 5,
-                "question": "How do you remove duplicates from an array in place?",
-            },
-            {
-                "id": 6,
-                "question": "How are duplicates removed from an array without using any library?",
-            },
-            {
-                "id": 7,
-                "question": "How do you find the middle element of a singly linked list in one pass?",
-            },
-        ]  # logic to fetch questions
-        return render(request, "home0.html", {"questions": questions})
+        questions_data = Question.objects.all()
+        questions = []
+        for question in questions_data:
+            if not Answer.objects.filter(question=question).exists():
+                questions.append({"id": question.id, "question": question.question})
+        return render(request, "home0.html", {"questions": questions[::-1]})
     elif page_no == 1:
-        questions = [
-            {"id": 3, "question": "3"},
-            {"id": 4, "question": "4"},
-        ]  # logic to fetch questions
-        return render(request, "home1.html", {"questions": questions})
+        questions_data = Question.objects.all()
+        questions = []
+        for question in questions_data:
+            if Answer.objects.filter(question=question).exists():
+                questions.append({"id": question.id, "question": question.question})
+        return render(request, "home1.html", {"questions": questions[::-1]})
     else:
         return HttpResponseNotFound()
 
