@@ -50,6 +50,11 @@
             </div>
         </div>
         {% endfor %}
+        {% if not answers %}
+        <div style="margin: 0 1.5rem 3rem 1.5rem;">
+            <p style="color: red;">There are no answers for this question yet!</p>
+        </div>
+        {% endif %}
         <div class="d-flex align-items-center justify-content-center" style="margin: 2rem;">
             <a class="btn btn-success" href="{% url 'main:answer_question' question_id %}">Answer
                 Question</a>
