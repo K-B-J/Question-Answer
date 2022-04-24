@@ -17,6 +17,12 @@ def root(request):
 def login(request):
     if request.method == "GET":
         form = AuthenticationForm()
+        if "my_messages" in request.session:
+            my_messages = request.session["my_messages"]
+            del request.session["my_messages"]
+            return render(
+                request, "login.html", {"form": form, "my_messages": my_messages}
+            )
         return render(request, "login.html", {"form": form})
     else:
         form = AuthenticationForm(request.POST)
@@ -36,14 +42,20 @@ def login(request):
                     "login.html",
                     {
                         "form": form,
-                        "my_messages": {"error": "Invalid Credentials."},
+                        "my_messages": {
+                            "error": True,
+                            "message": "Invalid Credentials",
+                        },
                     },
                 )
         else:
             return render(
                 request,
                 "login.html",
-                {"form": form, "my_messages": {"error": "Invalid Credentials."}},
+                {
+                    "form": form,
+                    "my_messages": {"error": True, "message": "Invalid Credentials"},
+                },
             )
 
 
@@ -67,12 +79,11 @@ def register(request):
             user_info = user_info_form.save(commit=False)
             user_info.user = user
             user_info.save()
-            # instead of login show message and ask to login
-            user_authenticated = authenticate(
-                request, username=user.username, password=user.password
-            )
-            auth_login(request, user_authenticated)
-            return redirect("main:home")
+            request.session["my_messages"] = {
+                "success": True,
+                "message": "Registration Successful",
+            }
+            return redirect("main:login")
         else:
             return render(
                 request,
@@ -87,7 +98,10 @@ def register(request):
 @login_required(login_url="main:login")
 def logout(request):
     auth_logout(request)
-    # show message of logout successfull
+    request.session["my_messages"] = {
+        "success": True,
+        "message": "Logged Out Successfully",
+    }
     return redirect("main:login")
 
 
